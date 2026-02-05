@@ -2,13 +2,6 @@
     "name": "Hytale Server Dev",
     "dockerComposeFile": "docker-compose.yml",
     "service": "hytale",
-    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "ms-azuretools.vscode-docker"
-            ]
-        }
-    },
+    "workspaceFolder": "/hytale",
     "remoteUser": "root"
 }
