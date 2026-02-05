@@ -7,81 +7,64 @@ VERSION_FILE="$BASE_DIR/current_version.txt"
 
 cd "$SCRIPT_DIR"
 
-# 1. Auto-Update inicial
+# 1. Permissões e Update inicial
 chmod +x "$DOWNLOADER"
+echo "[Launcher] Verificando versão..."
 LATEST_VERSION=$("$DOWNLOADER" -print-version)
 CURRENT_VERSION=$(cat "$VERSION_FILE" 2>/dev/null || echo "none")
 
 if [[ "$CURRENT_VERSION" != "$LATEST_VERSION" ]]; then
-    echo "[Launcher] Versão nova detectada: $LATEST_VERSION. Atualizando..."
+    echo "[Launcher] Nova versão disponível: $LATEST_VERSION. Atualizando..."
     "$DOWNLOADER"
     echo "$LATEST_VERSION" > "$VERSION_FILE"
 fi
 
-# 2. Loop de execução (Baseado no start.sh oficial)
+# 2. Loop de execução
 while true; do
-    APPLIED_UPDATE=false
-
-    # Aplica updates pendentes do downloader
+    # Aplica patches se o downloader deixou algo preparado
     if [ -f "updater/staging/Server/HytaleServer.jar" ]; then
-        echo "[Launcher] Aplicando patches pendentes..."
+        echo "[Launcher] Aplicando patches oficiais..."
         cp -f updater/staging/Server/HytaleServer.jar Server/
         [ -f "updater/staging/Server/HytaleServer.aot" ] && cp -f updater/staging/Server/HytaleServer.aot Server/
         [ -d "updater/staging/Server/Licenses" ] && rm -rf Server/Licenses && cp -r updater/staging/Server/Licenses Server/
         [ -f "updater/staging/Assets.zip" ] && cp -f updater/staging/Assets.zip ./
         rm -rf updater/staging
-        APPLIED_UPDATE=true
     fi
 
-    # Entra na pasta Server para rodar e gerar logs/mundos lá dentro
-    if [ -d "Server" ]; then
-        cd Server
-    else
-        echo "[Launcher] Erro: Pasta Server não encontrada. Rode o downloader primeiro."
-        exit 1
-    fi
+    if [ ! -d "Server" ]; then echo "[Launcher] Erro: Pasta Server não encontrada!"; exit 1; fi
+    cd Server
 
-    # Configuração Java: 16GB RAM + Cache AOT
-    JVM_ARGS="-Xms16G -Xmx16G"
+    # Java 25 + 16GB RAM + AOT
+    JVM_ARGS="-Xms6G -Xmx14G"
     [ -f "HytaleServer.aot" ] && JVM_ARGS="$JVM_ARGS -XX:AOTCache=HytaleServer.aot"
-
-    # Argumentos do Servidor (Sem Sentry conforme pedido)
+    
+    # Argumentos do Hytale
     DEFAULT_ARGS="--assets ../Assets.zip --backup --backup-dir backups --backup-frequency 30 --disable-sentry"
 
     echo "[Launcher] Iniciando Servidor Hytale..."
     java $JVM_ARGS -jar HytaleServer.jar $DEFAULT_ARGS "$@"
     
     EXIT_CODE=$?
-
-    # Volta para a raiz para backup ou restart
     cd "$SCRIPT_DIR"
 
-    # Se o servidor fechar pedindo update (Code 8)
     if [ $EXIT_CODE -eq 8 ]; then
-        echo "[Launcher] Reiniciando para aplicar atualização..."
+        echo "[Launcher] Reiniciando para atualizar..."
         continue
     fi
 
-    # Backup final antes de desligar
-    echo "[Launcher] Servidor encerrado. Sincronizando arquivos com GitHub..."
-    
-    # Garante que o Git reconheça a pasta como segura
+    # 3. Backup Git Verboso
+    echo "[Launcher] Servidor encerrado. Sincronizando com GitHub..."
     git config --global --add safe.directory /hytale
-
-    # Adiciona tudo, menos arquivos gigantes de cache se houver
     git add .
-
-    # Só faz o commit se houver mudanças reais (evita erro de commit vazio)
+    
     if ! git diff-index --quiet HEAD --; then
-        echo "[Launcher] Mudanças detectadas. Criando commit..."
+        echo "[Launcher] Mudanças detectadas. Fazendo commit..."
         git commit -m "Auto-save Hytale: $(date '+%Y-%m-%d %H:%M:%S')"
-        echo "[Launcher] Fazendo Push..."
+        echo "[Launcher] Enviando para o repositório..."
         git push origin main
     else
-        echo "[Launcher] Nenhuma mudança detectada no mundo/configs. Pulando backup."
+        echo "[Launcher] Nada novo para salvar."
     fi
-    
-    echo "[Launcher] Operação finalizada."
     
     break
 done
