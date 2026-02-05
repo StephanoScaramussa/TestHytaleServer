@@ -1,8 +1,12 @@
-FROM ghcr.io/machinastudios/hytale
+# Usamos uma base que facilite a instalação do Java 25
+FROM mcr.microsoft.com/devcontainers/base:ubuntu
 
-# Instalando ferramentas de sistema que o README não inclui por padrão
 USER root
-RUN apt-get update && apt-get install -y sudo git curl && rm -rf /var/lib/apt/lists/*
-RUN echo "root ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/nopasswd
+# Instalar Java 25 (Temurin), Git e Sudo
+RUN apt-get update && apt-get install -y wget apt-transport-https gnupg \
+    && wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | gpg --dearmor | tee /etc/apt/trusted.gpg.d/adoptium.gpg > /dev/null \
+    && echo "deb https://packages.adoptium.net/artifactory/deb $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/adoptium.list \
+    && apt-get update && apt-get install -y temurin-25-jdk git sudo curl \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /hytale
