@@ -1,7 +1,8 @@
 services:
   hytale:
-    image: ghcr.io/machinastudios/hytale
-    # Mudamos para garantir que o container fique ligado MESMO se o chmod falhar
+    build:
+      context: .
+      dockerfile: Dockerfile
     entrypoint: >
       /bin/sh -c "
       (chmod +x /hytale/hytale-downloader-linux-amd64 || true) && 
@@ -11,7 +12,6 @@ services:
     ports:
       - "5520:5520/udp"
     volumes:
-      # O Codespaces monta o projeto em /hytale
       - ..:/hytale
       - ../backups:/hytale/backups
       - ../mods:/hytale/mods
