@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     stdin_open: true
     tty: true
-    # Garante permissão no script e o executa
+    # Permite o script e o executa no boot
     command: /bin/bash -c "chmod +x /hytale/start-hytale.sh && /hytale/start-hytale.sh"
     ports:
       - "5520:5520/udp"
