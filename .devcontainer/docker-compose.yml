@@ -1,20 +1,20 @@
 services:
-    hytale:
-        build:
-          context: .
-          dockerfile: Dockerfile
-        stdin_open: true
-        tty: true
-        # Mantém vivo para você poder baixar o server manualmente ou via script
-        entrypoint: ["/bin/sh", "-c", "chmod +x /hytale/hytale-downloader-linux-amd64 || true; tail -f /dev/null"]
-        ports:
-            - "5520:5520/udp"
-        volumes:
-            - ..:/hytale              # Raiz do projeto
-            - ../backups:/hytale/backups
-            - ../mods:/hytale/mods
-            - ../logs:/hytale/logs
-            - ../universe:/hytale/universe
-        environment:
-            - SERVER_ACCEPT_EARLY_PLUGINS=true
-            - SERVER_BIND=0.0.0.0:5520
+  hytale:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    # Roda o script de automação assim que o container sobe
+    command: /bin/bash -c "chmod +x /hytale/start-hytale.sh && /hytale/start-hytale.sh"
+    ports:
+      - "5520:5520/udp"
+    volumes:
+      - ..:/hytale
+      - ../backups:/hytale/backups
+      - ../mods:/hytale/mods
+      - ../logs:/hytale/logs
+      - ../universe:/hytale/universe
+    environment:
+      - SERVER_ACCEPT_EARLY_PLUGINS=true
+      - SERVER_BIND=0.0.0.0:5520
