@@ -5,16 +5,12 @@ services:
       dockerfile: Dockerfile
     stdin_open: true
     tty: true
-    # Roda o script de automação assim que o container sobe
+    # Garante permissão no script e o executa
     command: /bin/bash -c "chmod +x /hytale/start-hytale.sh && /hytale/start-hytale.sh"
     ports:
       - "5520:5520/udp"
     volumes:
       - ..:/hytale
-      - ../backups:/hytale/backups
-      - ../mods:/hytale/mods
-      - ../logs:/hytale/logs
-      - ../universe:/hytale/universe
     environment:
       - SERVER_ACCEPT_EARLY_PLUGINS=true
       - SERVER_BIND=0.0.0.0:5520
