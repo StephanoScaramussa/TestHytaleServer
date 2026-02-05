@@ -1,15 +1,18 @@
 services:
   hytale:
     image: ghcr.io/machinastudios/hytale
-    entrypoint: ["/bin/sh", "-c", "chmod +x /hytale/hytale-downloader-linux-amd64 && tail -f /dev/null"]
+    # Mudamos para garantir que o container fique ligado MESMO se o chmod falhar
+    entrypoint: >
+      /bin/sh -c "
+      (chmod +x /hytale/hytale-downloader-linux-amd64 || true) && 
+      tail -f /dev/null"
     stdin_open: true
     tty: true
     ports:
       - "5520:5520/udp"
     volumes:
-      # Monta a raiz do projeto (onde está o downloader) em /hytale
+      # O Codespaces monta o projeto em /hytale
       - ..:/hytale
-      # Mapeia as pastas da raiz para os locais corretos no container
       - ../backups:/hytale/backups
       - ../mods:/hytale/mods
       - ../logs:/hytale/logs
