@@ -3,9 +3,17 @@ services:
     image: ghcr.io/machinastudios/hytale
     stdin_open: true
     tty: true
-    command: /bin/sh -c "while sleep 1000; do :; done" # Mantém o container vivo
+    # O comando abaixo garante que o container não feche enquanto você configura
+    command: /bin/sh -c "while sleep 1000; do :; done"
     ports:
       - "5520:5520/udp"
     volumes:
-      - .:/hytale # Mapeia a pasta atual para facilitar
-      # ... seus outros volumes
+      # Isso permite que o Codespaces monte o repo automaticamente
+      - ..:/workspaces:cached 
+      - ./backups:/hytale/backups
+      - ./mods:/hytale/mods
+      - ./logs:/hytale/logs
+      - ./universe:/hytale/universe
+    environment:
+      - SERVER_ACCEPT_EARLY_PLUGINS=true
+      - SERVER_BIND=0.0.0.0:5520
