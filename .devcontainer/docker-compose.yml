@@ -1,0 +1,11 @@
+services:
+  hytale:
+    image: ghcr.io/machinastudios/hytale
+    stdin_open: true
+    tty: true
+    command: /bin/sh -c "while sleep 1000; do :; done" # Mantém o container vivo
+    ports:
+      - "5520:5520/udp"
+    volumes:
+      - .:/hytale # Mapeia a pasta atual para facilitar
+      # ... seus outros volumes
