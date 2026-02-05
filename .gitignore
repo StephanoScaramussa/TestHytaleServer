@@ -1,16 +1,7 @@
-# Ignora o Assets.zip (muito pesado para o GitHub)
-/Assets.zip
-
-# Ignora zips de update que o script possa ter deixado
+# Ignora apenas lixo temporário
 /*.zip
-
-# Protege os zips de mods (não ignora o que estiver em mods)
-!/Server/mods/*.zip
-
-# Ignora logs e caches temporários
+!/Assets.zip
 /updater/
 /temp/
 /Server/logs/*.log
 /Server/logs/*.gz
-start.sh
-start.bat
