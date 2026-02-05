@@ -64,9 +64,24 @@ while true; do
 
     # Backup final antes de desligar
     echo "[Launcher] Servidor encerrado. Sincronizando arquivos com GitHub..."
+    
+    # Garante que o Git reconheça a pasta como segura
+    git config --global --add safe.directory /hytale
+
+    # Adiciona tudo, menos arquivos gigantes de cache se houver
     git add .
-    git commit -m "Hytale Auto-save: $(date '+%Y-%m-%d %H:%M:%S')"
-    git push origin main
+
+    # Só faz o commit se houver mudanças reais (evita erro de commit vazio)
+    if ! git diff-index --quiet HEAD --; then
+        echo "[Launcher] Mudanças detectadas. Criando commit..."
+        git commit -m "Auto-save Hytale: $(date '+%Y-%m-%d %H:%M:%S')"
+        echo "[Launcher] Fazendo Push..."
+        git push origin main
+    else
+        echo "[Launcher] Nenhuma mudança detectada no mundo/configs. Pulando backup."
+    fi
+    
+    echo "[Launcher] Operação finalizada."
     
     break
 done
