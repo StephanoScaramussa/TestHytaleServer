@@ -1,0 +1,12 @@
+{
+    "name": "Hytale Server Dev",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "hytale",
+    "workspaceFolder": "/hytale",
+    "customizations": {
+        "codespaces": {
+            "openFiles": []
+        }
+    },
+    "remoteUser": "root"
+}
