@@ -1,7 +1,15 @@
 {
-    "name": "Hytale Server",
+    "name": "Hytale Server com Git",
     "dockerComposeFile": "docker-compose.yml",
     "service": "hytale",
     "workspaceFolder": "/hytale",
-    "remoteUser": "root"
+    "remoteUser": "root",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools", 
+                "redhat.java"
+            ]
+        }
+    }
 }
