@@ -1,0 +1,2 @@
+# TestHytaleServer
+test
