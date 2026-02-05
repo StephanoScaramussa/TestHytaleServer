@@ -1,12 +1,9 @@
 services:
   hytale:
     image: ghcr.io/machinastudios/hytale
+    entrypoint: ["/bin/sh", "-c", "chmod +x /hytale/hytale-downloader-linux-amd64 && tail -f /dev/null"]
     stdin_open: true
     tty: true
-    # O comando abaixo dá permissão ao downloader e depois mantém o container vivo
-    command: >
-      /bin/sh -c "chmod +x /hytale/hytale-downloader-linux-amd64 && 
-      while sleep 1000; do :; done"
     ports:
       - "5520:5520/udp"
     volumes:
