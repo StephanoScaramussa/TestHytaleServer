@@ -1,5 +1,5 @@
 {
-    "name": "Hytale Server com Git",
+    "name": "Hytale Server Codespace",
     "dockerComposeFile": "docker-compose.yml",
     "service": "hytale",
     "workspaceFolder": "/hytale",
@@ -7,8 +7,7 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-vscode.cpptools", 
-                "redhat.java"
+                "ms-azuretools.vscode-docker"
             ]
         }
     }
