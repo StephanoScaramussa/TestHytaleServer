@@ -3,17 +3,20 @@ services:
     image: ghcr.io/machinastudios/hytale
     stdin_open: true
     tty: true
-    # O comando abaixo garante que o container não feche enquanto você configura
-    command: /bin/sh -c "while sleep 1000; do :; done"
+    # O comando abaixo dá permissão ao downloader e depois mantém o container vivo
+    command: >
+      /bin/sh -c "chmod +x /hytale/hytale-downloader-linux-amd64 && 
+      while sleep 1000; do :; done"
     ports:
       - "5520:5520/udp"
     volumes:
-      # Isso permite que o Codespaces monte o repo automaticamente
-      - ..:/workspaces:cached 
-      - ./backups:/hytale/backups
-      - ./mods:/hytale/mods
-      - ./logs:/hytale/logs
-      - ./universe:/hytale/universe
+      # Monta a raiz do projeto (onde está o downloader) em /hytale
+      - ..:/hytale
+      # Mapeia as pastas da raiz para os locais corretos no container
+      - ../backups:/hytale/backups
+      - ../mods:/hytale/mods
+      - ../logs:/hytale/logs
+      - ../universe:/hytale/universe
     environment:
       - SERVER_ACCEPT_EARLY_PLUGINS=true
       - SERVER_BIND=0.0.0.0:5520
