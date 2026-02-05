@@ -1,5 +1,5 @@
 {
-    "name": "Hytale Server Dev",
+    "name": "Hytale Server",
     "dockerComposeFile": "docker-compose.yml",
     "service": "hytale",
     "workspaceFolder": "/hytale",
