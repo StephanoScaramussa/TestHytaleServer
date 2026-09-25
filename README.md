@@ -132,6 +132,7 @@ erDiagram
         int vol_perguntas_sede
         int vol_respostas_sede
         int vol_views_sede
+        float tempo_medio_resposta_horas
     }
     
     Dim_Tempo {
